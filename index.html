@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    
+    <style>
+
+        .sel {outline: 1px solid darkorange;padding:0px;margin: :0px}
+        .comp {border: 1px solid orange;padding:5px;margin: :5px}
+        .unsel {outline: none;padding:0px;margin: :0px}
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div style="position:fixed;top:0;left:350px;">
+            <app-pane></app-pane>
+        </div>
+        <div style="position:fixed;top:0;right:0;width:300px;background-color: aqua">
+            <control-pane></control-pane>
+        </div>
+        
+        <div style="position:fixed;top:0;left:0;width:300px;background-color:aliceblue">
+            <comp-pane></comp-pane>
+        </div>
+    </div>
+    
+
+    <script src="node_modules/vue/dist/vue.min.js"></script>
+    <script src="node_modules/vuex/dist/vuex.min.js"></script>
+    <script src="node_modules/babel-standalone/babel.min.js"></script>
+    <script src="node_modules/sortablejs/Sortable.min.js"></script>
+    <script type="text/babel" src="js/Main.js"></script>
+    <script type="text/babel" src="js/Heading.js"></script>
+    <script type="text/babel" src="js/Article.js"></script>
+    <script type="text/babel">
+        (()=>{
+            window.Heading = Main.createComponentClass(HeadingJSON)
+            window.Article = Main.createComponentClass(ArticleJSON)
+            window.appMain = new Main("#app");
+            
+            appMain.addComp(new Heading())
+            let idx1 = appMain.addComp(new Heading())
+            
+            
+            setTimeout(()=>{
+                    appMain.changeSetting(idx1, {
+                        text:'hello'+idx1
+                    });
+
+            },1000)
+            
+            let idx2 = appMain.addComp(new Article())
+            
+//            setInterval(()=>{
+//                let idx = appMain.addComp(new Heading({
+//                        level:2,
+//                        text:'H2'
+//                    }))
+//
+//                setTimeout(()=>{
+//                    appMain.changeSetting(idx, {
+//                        level:6,
+//                        text:'hello'+idx
+//                    });
+//
+//                },1000)
+//            }, 1000)
+        })()
+        
+    </script>
+
+</body>
+
+</html>
