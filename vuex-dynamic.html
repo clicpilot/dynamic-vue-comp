@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Vuex</title>
+
+    <script src="node_modules/vue/dist/vue.min.js"></script>
+    <script src="node_modules/vuex/dist/vuex.min.js"></script>
+    <script src="node_modules/babel-standalone/babel.min.js"></script>
+
+
+</head>
+<body>
+  
+    <div id="app">
+        <p v-for="(item, key, idx) in mydata">
+                {{key}} {{item}}
+        </p>
+        <div>
+            <p v-for="item in myarray">
+                {{item}}
+            </p>
+        </div>
+        <data-input></data-input>
+        <data-span></data-span>
+        <p>
+            {{json}}
+        </p>
+    </div>
+
+    
+    <script type="text/babel">
+        (()=>{
+            var obj = {name:"foo"};
+            var arr = ['a', 'b', 'c'];
+            const store = new Vuex.Store({
+                state: {
+                    mydata:obj,       
+                    myarray:arr
+
+                },
+                getters: {
+                    myjson(state) {
+                        return JSON.stringify([state.myarray, state.mydata])
+                    }
+                },
+                mutations: {
+                    setData:function(state1, data) {
+                        state1.mydata = data
+                    },
+                    setArray:function(state1, data) {
+                        state1.myarray = data
+                    },
+                    addItem:function(state1, data) {
+                        state1.myarray.push(data)
+                    },
+                    addData:function(state1, data) {
+                        Vue.set( state1.mydata, data[0], data[1])
+                    }
+
+                }
+            })
+            Vue.component('data-input', {
+                data:function(){
+                    return {
+                        count:0
+                    }
+                },
+                template:`<div>
+                    <div v-for="key in Object.keys(mydata)" :key="key">
+                        <label>{{key}}</label>
+                        <input type="text" v-model="mydata[key]"></input>
+                        <p>{{mydata[key]}}</p>
+                    </div>
+                    <p>
+                    <button v-on:click="addData('newkey'+count, 'data')">Add</button>
+                    </p>
+
+                    <div v-for="(item, idx) in myarray">
+                        <label>Item {{idx}}</label>
+                        <input type="text" v-model="myarray[idx]"></input>
+                        <p>{{myarray[idx]}}</p>
+                    </div>
+                    <p>
+                    <button v-on:click="addItem('item')">Add</button>
+                    </p>
+                    </div>
+                `,
+                store:store,
+                computed:
+                    Vuex.mapState(['mydata', 'myarray'])
+                ,
+                methods:{
+                    addItem:function(data) {
+                        this.$store.commit("addItem", data)
+                    },
+                    addData:function(key, data) {
+                        this.count++;
+                        this.$store.commit("addData", [key, data])
+                    }
+                }
+            })
+            
+             Vue.component('data-span', {
+                template:`<div>
+                    <p v-for="(item, key, idx) in mydata">
+                        {{key}} {{item}}
+                    </p>
+                    <p v-for="item in myarray">
+                        {{item}}
+                    </p>
+                    </div>
+                `,
+                store:store,
+                computed:Vuex.mapState([
+                       'mydata', 'myarray'
+                      ]),
+            })
+            
+
+            const vm = new Vue({
+                el: "#app",
+                store:store,
+                data:{
+
+                },
+                methods:{
+
+                },
+                computed: {
+                    ...Vuex.mapState([
+                       'mydata', 'myarray'
+                    ]),
+                    json:function(){return this.$store.getters.myjson}
+                },
+                    
+                
+                mounted:function(){
+
+                }, 
+
+            })
+            
+            
+
+        })()
+
+        
+
+        
+
+    </script>
+  
+</body>
+</html>
